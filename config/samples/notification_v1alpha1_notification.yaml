@@ -1,0 +1,9 @@
+apiVersion: notification.res-x.com/v1alpha1
+kind: Notification
+metadata:
+  labels:
+    app.kubernetes.io/name: k8s-notification-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: notification-sample
+spec:
+  # TODO(user): Add fields here

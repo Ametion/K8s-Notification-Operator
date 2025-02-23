@@ -1,0 +1,11 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: k8s-notification-operator-role
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "configmaps"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["notification.res-x.com"]
+    resources: ["notifications"]
+    verbs: ["get", "list", "watch"]
