@@ -28,8 +28,8 @@ Run the following commands to set up the necessary roles, bindings, namespace, a
 kubectl apply -f .\config\rbac\cluster_role.yaml
 kubectl apply -f .\config\rbac\cluster_role_binding.yaml
 kubectl create namespace k8s-notification-operator-system
-kubectl apply -f .\config\notification-config.yaml #before applying this file, make sure to update the discordBotToken, discordChannelID, and watchNamespaces
 kubectl apply -f .\config\default
+kubectl apply -f .\config\notification-config.yaml #before applying this file, make sure to update the discordBotToken, discordChannelID, and watchNamespaces
 ```
 
 ## 🛠 Configuration
@@ -37,15 +37,33 @@ kubectl apply -f .\config\default
 Modify the `config/notification-config.yaml` file to set up your Discord bot:
 
 ```yaml
-apiVersion: v1
-kind: ConfigMap
+apiVersion: notification.res-x.com/v1alpha1
+kind: Notification
 metadata:
   name: notification-config
-  namespace: k8s-notification-operator-system
-data:
-  discordBotToken: "<YOUR_DISCORD_BOT_TOKEN>"
-  discordChannelID: "<YOUR_DISCORD_CHANNEL_ID>"
-  watchNamespaces: "default,custom-namespace"
+  namespace: operator-system
+spec:
+  namespaces: ["default", "custom-namespace"]
+  discord:
+    enabled: true
+    discordBotToken: "<YOUR_DISCORD_BOT_TOKEN>"
+    discordChannelID: "<YOUR_DISCORD_CHANNEL_ID>"
+    message: "Pod {{.Name}} in namespace {{.Namespace}} is {{.Status}}"
+    status:
+      Running: "running"
+      Pending: "pending"
+      Succeeded: "succeeded"
+      Failed: "failed"
+      Unknown: "unknown"
+  telegram:
+    enabled: true
+    telegramBotToken: "<YOUR_TELEGRAM_BOT_TOKEN>"
+    telegramChatID: "<YOUR_TELEGRAM_CHAT_ID>"
+    message: "Pod {{.Name}} in namespace {{.Namespace}} is {{.Status}}"
+    status:
+      Running: "running"
+      Succeeded: "succeeded"
+
 ```
 
 - **`discordBotToken`** – Your Discord bot token.

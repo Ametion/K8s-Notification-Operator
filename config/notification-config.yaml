@@ -1,9 +1,26 @@
-apiVersion: v1
-kind: ConfigMap
+apiVersion: notification.res-x.com/v1alpha1
+kind: Notification
 metadata:
   name: notification-config
-  namespace: k8s-notification-operator-system
-data:
-  discordBotToken: "<YOUR_DISCORD_BOT_TOKEN>"
-  discordChannelID: "<YOUR_DISCORD_CHANNEL_ID>"
-  watchNamespaces: "default,custom-namespace"
+  namespace: operator-system
+spec:
+  namespaces: ["default", "custom-namespace"]
+  discord:
+    enabled: true
+    discordBotToken: "<YOUR_DISCORD_BOT_TOKEN>"
+    discordChannelID: "<YOUR_DISCORD_CHANNEL_ID>"
+    message: "Pod {{.Name}} in namespace {{.Namespace}} is {{.Status}}"
+    status:
+      Running: "running"
+      Pending: "pending"
+      Succeeded: "succeeded"
+      Failed: "failed"
+      Unknown: "unknown"
+  telegram:
+    enabled: true
+    telegramBotToken: "<YOUR_TELEGRAM_BOT_TOKEN>"
+    telegramChatID: "<YOUR_TELEGRAM_CHAT_ID>"
+    message: "Pod {{.Name}} in namespace {{.Namespace}} is {{.Status}}"
+    status:
+      Running: "running"
+      Succeeded: "succeeded"
