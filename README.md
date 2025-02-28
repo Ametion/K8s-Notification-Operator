@@ -1,11 +1,11 @@
 # Kubernetes Notification Operator
 
-The **Kubernetes Notification Operator** is a custom operator that sends notifications to a specified **Discord channel** whenever a pod is created in the monitored namespaces. The operator retrieves the **Discord bot token, channel ID, and namespaces to watch** from a ConfigMap. **You need your own **Discord Bot** added on your own server to use this operator.**
+The **Kubernetes Notification Operator** is a custom operator that sends notifications to a specified **Messenger** whenever a pod is in chosen status in the monitored namespaces. The operator retrieves the **Messenger Conf, pod statuses and namespaces to watch** from a CRD.
 
 ## ✨ Features
 
-- 🚀 **Automatic Notifications** – Sends messages to a Discord channel when new pods are created.
-- 🔧 **Configurable via ConfigMap** – Customize the Discord bot token, channel ID, and namespaces to monitor.
+- 🚀 **Automatic Notifications** – Sends messages to a enabled and configured messenger when pods are detected.
+- 🔧 **Configurable via Custom CRD** – Messengers, pod statues and namespaces to monitor.
 - 🔄 **Easy Deployment** – Deploy the operator with simple Kubernetes commands. 
 
 
@@ -29,7 +29,7 @@ kubectl apply -f .\config\rbac\cluster_role.yaml
 kubectl apply -f .\config\rbac\cluster_role_binding.yaml
 kubectl create namespace k8s-notification-operator-system
 kubectl apply -f .\config\default
-kubectl apply -f .\config\notification-config.yaml #before applying this file, make sure to update the discordBotToken, discordChannelID, and watchNamespaces
+kubectl apply -f .\config\notification-config.yaml #before applying this file, update auth tokens for enabled messengers
 ```
 
 ## 🛠 Configuration
@@ -66,15 +66,22 @@ spec:
 
 ```
 
-- **`discordBotToken`** – Your Discord bot token.
+- **`discord`** – Configuration for Discord notifications.
+- **`discordBotToken`** – The Discord bot token to use for sending messages.
 - **`discordChannelID`** – The Discord channel ID where notifications will be sent.
+- **`telegram`** – Configuration for Telegram notifications.
+- **`telegramBotToken`** – The Telegram bot token to use for sending messages.
+- **`telegramChatID`** – The Telegram chat ID where notifications will be sent.
+- **`message`** – The message template to use for notifications.
+- **`status`** – Mapping of pod statuses to human-readable strings.
+- **`enabled`** – Whether to enable the Discord or Telegram notification feature.
 - **`watchNamespaces`** – Comma-separated list of namespaces to monitor for pod creation.
 
 ## 🎯 How It Works
 
-1. The operator watches for newly created pods in the specified namespaces.
-2. When a new pod is detected, it sends a message to the configured **Discord channel**.
-3. The message contains details about the new pod, including its name, namespace, and creation time.
+1. The operator watches for pods with described in config statuses in the specified namespaces.
+2. When a new pod is detected, it sends a message to the configured **Messengers**.
+3. The message contains details about the pod, including its name, namespace, and status.
 
 ## 🔗 Useful Links
 
